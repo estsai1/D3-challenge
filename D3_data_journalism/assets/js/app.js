@@ -33,6 +33,12 @@ d3.csv("https://raw.githubusercontent.com/estsai1/test/master/data.csv").then(fu
 
     console.log(data);
 
+    // Format healthcare and poverty to numbers
+    data.forEach(function(data) {
+        data.healthcare = +data.healthcare;
+        data.poverty = +data.poverty;
+    });
+
     // Log healthcare, poverty, and state abbreviation
     var healthcare = data.map(d => d.healthcare);
     var poverty = data.map(d => d.poverty);
@@ -40,8 +46,26 @@ d3.csv("https://raw.githubusercontent.com/estsai1/test/master/data.csv").then(fu
 
     console.log("Abbr:", abbr, "Healthcare:", healthcare, "Poverty:", poverty);
 
-    // data.forEach(function(data)
+    // Set up bottom axis
+    var x_scale = d3.scaleLinear()
+        .domain([0, d3.max(data, entry => entry.poverty)])
+        .range([0, chartWidth]);
+    var bottom_axis = d3.axisBottom(x_scale);
+    chartGroup.append("g")
+        .classed("axis", true)
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(bottom_axis);
 
+    // Set up left axis
+    var y_scale = d3.scaleLinear()
+        .domain([0, d3.max(data, entry => entry.healthcare)])
+        .range([chartHeight, 0]);
+    var left_axis = d3.axisLeft(y_scale);
+    chartGroup.append("g")
+        .classed("axis", true)
+        .call(left_axis);
 
+    // Draw states
+    
 
 });
